@@ -21,15 +21,23 @@ router.post('/register', async (req, res) => {
 
 // 登录
 router.post('/login', async (req, res) => {
-  await db.read();
-  const { username, password } = req.body;
-  const user = db.data.users.find(u => u.username === username && u.password === password);
-  if (!user) {
-    return res.status(401).json({ message: 'Username or password incorrect' });
-  }
-  req.session.user = { username };
-  res.json({ message: 'Login successful!', username });
+    await db.read();
+    const { username, password, captcha } = req.body;
+
+    // 验证验证码
+    if (captcha !== req.session.captcha) {
+        return res.status(400).json({ message: 'Captcha incorrect' });
+    }
+
+    const user = db.data.users.find(u => u.username === username && u.password === password);
+    if (!user) {
+        return res.status(401).json({ message: 'Username or password incorrect' });
+    }
+
+    req.session.user = { username };
+    res.json({ message: 'Login successful!', username });
 });
+
 
 // 登出
 router.post('/logout', (req, res) => {
