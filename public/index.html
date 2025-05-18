@@ -5,13 +5,21 @@
   <title>Movie Tracker</title>
 </head>
 <body>
+    <a href="login.html">Login</a> | <a href="register.html">Register</a>
+
   <h1>Movie Tracker</h1>
+
+  
+  <button onclick="logout()">Logout</button>
+
   <div>
     <input id="movie-input" placeholder="Movie Title">
     <button onclick="searchMovie()">Search</button>
     <div id="result"></div>
   </div>
+
   <script>
+    
     function searchMovie() {
       const title = document.getElementById('movie-input').value;
       fetch(`https://www.omdbapi.com/?apikey=4e6b2e0&t=${encodeURIComponent(title)}`)
@@ -29,6 +37,13 @@
             document.getElementById('result').innerText = 'Movie not found!';
           }
         });
+    }
+
+
+    function logout() {
+      fetch('/users/logout', { method: 'POST' })
+        .then(res => res.json())
+        .then(data => alert(data.message));
     }
   </script>
 </body>
