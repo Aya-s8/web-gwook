@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Movie Tracker</title>
+</head>
+<body>
+  <h1>Movie Tracker</h1>
+  <div>
+    <input id="movie-input" placeholder="Movie Title">
+    <button onclick="searchMovie()">Search</button>
+    <div id="result"></div>
+  </div>
+  <script>
+    function searchMovie() {
+      const title = document.getElementById('movie-input').value;
+      fetch(`https://www.omdbapi.com/?apikey=4e6b2e0&t=${encodeURIComponent(title)}`)
+        .then(res => res.json())
+        .then(data => {
+          if (data.Response === "True") {
+            document.getElementById('result').innerHTML = `
+              <h3>${data.Title} (${data.Year})</h3>
+              <img src="${data.Poster}" alt="Poster" style="max-width:200px;">
+              <p>${data.Plot}</p>
+              <p><b>Director:</b> ${data.Director}</p>
+              <p><b>Actors:</b> ${data.Actors}</p>
+            `;
+          } else {
+            document.getElementById('result').innerText = 'Movie not found!';
+          }
+        });
+    }
+  </script>
+</body>
+</html>
